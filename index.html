@@ -175,7 +175,7 @@
             const certificadosExternos = {
                 'juan0060117/RJ': {
                     nome: 'Juan Queiroz Lisboa',
-                    projeto: 'As Cores da Sombra',
+                    projeto:'As Cores da Sombra',
                     data: '06/08/2025',
                     horas: '7',
                     instituicao: 'Estudios E.M Produções',
@@ -183,7 +183,7 @@
                 },
                 'gabriel9778': {
                     nome: 'Gabriel Alves Arandas Luna',
-                    projeto: 'As Cores da Sombra',
+                    projeto:'As Cores da Sombra',
                     data: '06/08/2025',
                     horas: '4',
                     instituicao: 'Estudios E.M Produções',
@@ -224,7 +224,7 @@
                     <div class="cert-details">
                         <h3>DADOS DO CERTIFICADO</h3>
                         <p><strong>Nome:</strong> ${certificado.nome}</p>
-                        <p><strong>Curso/Projeto:</strong> ${certificado.curso}</p>
+                        <p><strong>Curso/Projeto:</strong> ${certificado.projeto || certificado.curso}</p>
                         <p><strong>Data de Emissão:</strong> ${certificado.data}</p>
                         <p><strong>Carga Horária:</strong> ${certificado.horas} horas</p>
                         <p><strong>Instituição:</strong> ${certificado.instituicao}</p>
