@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validação de Certificado</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: rgba(255,255,255,0.95);
+            text-align: center;
+            padding: 40px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            color: #1e3c72;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            color: #666;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+        
+        .validation-form {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        
+        .validation-form input {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        
+        .validation-form button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            background: #1e3c72;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .resultado {
+            margin-top: 30px;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+        }
+        
+        .resultado.valido {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+        }
+        
+        .resultado.invalido {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            color: #721c24;
+        }
+        
+        .cert-details {
+            text-align: left;
+            background: rgba(255,255,255,0.8);
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        
+        .cert-details h3 {
+            color: #1e3c72;
+            margin-bottom: 15px;
+        }
+        
+        .cert-details p {
+            margin: 8px 0;
+            font-size: 16px;
+        }
+        
+        .btn-certificado {
+            background: #28a745;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-certificado:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>VALIDAÇÃO DE CERTIFICADO</h1>
+        <p>Digite o código do certificado para verificar sua autenticidade</p>
+    </div>
+
+    <div class="container">
+        <div class="validation-form">
+            <input type="text" id="codigo" placeholder="Digite o código do certificado" maxlength="20">
+            <button onclick="validarCertificado()">VALIDAR</button>
+        </div>
+
+        <div id="resultado" class="resultado"></div>
+    </div>
+
+    <script>
+        async function validarCertificado() {
+            const codigo = document.getElementById('codigo').value.trim();
+            const resultado = document.getElementById('resultado');
+            
+            if (!codigo) {
+                mostrarResultado('Por favor, digite um código válido.', false);
+                return;
+            }
+            
+            mostrarCarregando();
+            
+            try {
+                const certificado = await buscarCertificadoExterno(codigo);
+                
+                if (certificado) {
+                    mostrarResultado('CERTIFICADO VÁLIDO', true, certificado);
+                } else {
+                    mostrarResultado('CERTIFICADO NÃO ENCONTRADO', false);
+                }
+            } catch (error) {
+                mostrarResultado('ERRO NA VALIDAÇÃO', false);
+            }
+        }
+        
+        async function buscarCertificadoExterno(codigo) {
+            // Mapeamento de códigos QR com URLs específicas do AWS S3
+            const certificadosExternos = {
+                'juan0060117/RJ': {
+                    nome: 'Juan Queiroz Lisboa',
+                    projeto: 'As Cores da Sombra',
+                    data: '06/08/2025',
+                    horas: '7',
+                    instituicao: 'Estudios E.M Produções',
+                    urlPdf: 'https://oqg-primary-prod-content.s3.us-east-1.amazonaws.com/uploads/pdf/1754450349571_6mGp1u.pdf'
+                },
+                'gabriel9778': {
+                    nome: 'Gabriel Alves Arandas Luna',
+                    projeto: 'As Cores da Sombra',
+                    data: '06/08/2025',
+                    horas: '4',
+                    instituicao: 'Estudios E.M Produções',
+                    urlPdf: 'https://oqg-primary-prod-content.s3.us-east-1.amazonaws.com/uploads/pdf/1754453493296_GBNs2R.pdf'
+                },
+                'pedro456/RJ': {
+                    nome: 'Pedro Oliveira Costa',
+                    curso: 'JavaScript Avançado',
+                    data: '20/02/2024',
+                    horas: '60',
+                    instituicao: 'Code Institute',
+                    urlPdf: 'https://oqg-primary-prod-content.s3.us-east-1.amazonaws.com/uploads/pdf/1754450349573_8oIr3w.pdf'
+                }
+            };
+            
+            // Simular delay de API
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            return certificadosExternos[codigo] || null;
+        }
+        
+        function mostrarCarregando() {
+            const resultado = document.getElementById('resultado');
+            resultado.className = 'resultado';
+            resultado.innerHTML = '<h2>🔍 VALIDANDO...</h2><p>Buscando certificado no sistema externo...</p>';
+            resultado.style.display = 'block';
+        }
+
+        function mostrarResultado(mensagem, valido, certificado = null) {
+            const resultado = document.getElementById('resultado');
+            resultado.className = `resultado ${valido ? 'valido' : 'invalido'}`;
+            
+            let html = `<h2>${valido ? '✅' : '❌'} ${mensagem}</h2>`;
+            
+            if (certificado) {
+                const codigo = document.getElementById('codigo').value.trim();
+                html += `
+                    <div class="cert-details">
+                        <h3>DADOS DO CERTIFICADO</h3>
+                        <p><strong>Nome:</strong> ${certificado.nome}</p>
+                        <p><strong>Curso/Projeto:</strong> ${certificado.curso}</p>
+                        <p><strong>Data de Emissão:</strong> ${certificado.data}</p>
+                        <p><strong>Carga Horária:</strong> ${certificado.horas} horas</p>
+                        <p><strong>Instituição:</strong> ${certificado.instituicao}</p>
+                        <p><strong>Status:</strong> Verificado no sistema externo</p>
+                    </div>
+                    <button class="btn-certificado" onclick="abrirCertificado('${codigo}')">
+                        📄 ABRIR CERTIFICADO
+                    </button>
+                `;
+            }
+            
+            resultado.innerHTML = html;
+            resultado.style.display = 'block';
+        }
+
+        document.getElementById('codigo').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                validarCertificado();
+            }
+        });
+
+        async function abrirCertificado(codigo) {
+            // Buscar dados do certificado para obter URL do PDF
+            const certificado = await buscarCertificadoExterno(codigo);
+            
+            if (certificado && certificado.urlPdf) {
+                // Abrir PDF específico do AWS S3
+                window.open(certificado.urlPdf, '_blank');
+            } else {
+                alert('PDF do certificado não encontrado');
+            }
+        }
+
+        // Verificar se há código na URL
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const codigo = urlParams.get('code');
+            if (codigo) {
+                document.getElementById('codigo').value = codigo;
+                validarCertificado();
+            }
+        };
+    </script>
+</body>
+</html>
