@@ -189,7 +189,7 @@
                     produtora: 'Estudios E.M Produções',
                     urlPdf: 'https://oqg-primary-prod-content.s3.us-east-1.amazonaws.com/uploads/pdf/1754453493296_GBNs2R.pdf'
                 },
-                'gabriela0061138RJ': {
+                'gabriela0061138/RJ': {
                     nome: 'Gabriela Teixeira Vasconcelos de Souza Tarares',
                     projeto:'As Cores da Sombra',
                     data: '06/08/2025',
@@ -213,13 +213,14 @@
                     produtora: 'Estudios E.M Produções',
                     urlPdf: 'https://oqg-primary-prod-content.s3.us-east-1.amazonaws.com/uploads/pdf/1754538089411_B9QjCN.pdf'
                 },
-                'heron0062148/Rj'
+                'heron0062148/Rj': {
                     nome: 'Heron Elisio Câmara Mendes Sampaio',
                     projeto:'As Cores da Sombra',
                     data: '06/08/2025',
                     horas: '36',
                     produtora: 'Estudios E.M Produções',
                     urlPdf: 'https://oqg-primary-prod-content.s3.us-east-1.amazonaws.com/uploads/pdf/1754541559443_Blrn9B.pdf'
+                }
             };
             
             // Simular delay de API
@@ -252,10 +253,10 @@
                         <p><strong>Carga Horária:</strong> ${certificado.horas} horas</p>
                         <p><strong>Produtora:</strong> ${certificado.produtora || certificado.instituicao}</p>
                         <p><strong>Status:</strong> Verificado no sistema externo</p>
+                        <button class="btn-certificado" onclick="abrirCertificado('${codigo}')">
+                            📄 ABRIR CERTIFICADO
+                        </button>
                     </div>
-                    <button class="btn-certificado" onclick="abrirCertificado('${codigo}')">
-                        📄 ABRIR CERTIFICADO
-                    </button>
                 `;
             }
             
