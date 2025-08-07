@@ -235,7 +235,7 @@
                         <p><strong>Curso/Projeto:</strong> ${certificado.projeto || certificado.curso}</p>
                         <p><strong>Data de Emissão:</strong> ${certificado.data}</p>
                         <p><strong>Carga Horária:</strong> ${certificado.horas} horas</p>
-                        <p><strong>Instituição:</strong> ${certificado.instituicao}</p>
+                        <p><strong>Produtora:</strong> ${certificado.produtora || certificado.instituicao}</p>
                         <p><strong>Status:</strong> Verificado no sistema externo</p>
                     </div>
                     <button class="btn-certificado" onclick="abrirCertificado('${codigo}')">
