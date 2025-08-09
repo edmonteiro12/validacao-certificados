@@ -15,6 +15,8 @@
             font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             min-height: 100vh;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
         }
         
         .header {
@@ -59,6 +61,9 @@
             margin-bottom: 20px;
             text-align: center;
             text-transform: uppercase;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
         }
         
         .validation-form button {
@@ -71,6 +76,10 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            touch-action: manipulation;
         }
         
         .resultado {
@@ -138,7 +147,7 @@
 
     <div class="container">
         <div class="validation-form">
-            <input type="text" id="codigo" placeholder="Digite o código do certificado" maxlength="20">
+            <input type="text" id="codigo" placeholder="Digite o código do certificado" maxlength="20" autocomplete="off" autocapitalize="none" spellcheck="false">
             <button onclick="validarCertificado()">VALIDAR</button>
         </div>
 
@@ -171,9 +180,12 @@
         }
         
         async function buscarCertificadoExterno(codigo) {
+            // Normalizar código para busca (converter para minúsculas)
+            const codigoNormalizado = codigo.toLowerCase();
+            
             // Mapeamento de códigos QR com URLs específicas do AWS S3
             const certificadosExternos = {
-                'juan0060117/RJ': {
+                'juan0060117/rj': {
                     nome: 'Juan Queiroz Lisboa',
                     projeto:'As Cores da Sombra',
                     data: '06/08/2025',
@@ -189,7 +201,7 @@
                     produtora: 'Estudios E.M Produções',
                     urlPdf: 'https://oqg-primary-prod-content.s3.us-east-1.amazonaws.com/uploads/pdf/1754453493296_GBNs2R.pdf'
                 },
-                'gabriela0061138/RJ': {
+                'gabriela0061138/rj': {
                     nome: 'Gabriela Teixeira Vasconcelos de Souza Tarares',
                     projeto:'As Cores da Sombra',
                     data: '06/08/2025',
@@ -197,7 +209,7 @@
                     produtora: 'Estudios E.M Produções',
                     urlPdf: 'https://oqg-primary-prod-content.s3.us-east-1.amazonaws.com/uploads/pdf/1754532777256_laL6wU.pdf'
                 },
-                'odaylton0001826/AL': {
+                'odaylton0001826/al': {
                     nome: 'Antonio Odailton Barbosa',
                     projeto:'As Cores da Sombra',
                     data: '06/08/2025',
@@ -213,7 +225,7 @@
                     produtora: 'Estudios E.M Produções',
                     urlPdf: 'https://oqg-primary-prod-content.s3.us-east-1.amazonaws.com/uploads/pdf/1754538089411_B9QjCN.pdf'
                 },
-                'heron0062148/Rj': {
+                'heron0062148/rj': {
                     nome: 'Heron Elisio Câmara Mendes Sampaio',
                     projeto:'As Cores da Sombra',
                     data: '06/08/2025',
@@ -221,7 +233,7 @@
                     produtora: 'Estudios E.M Produções',
                     urlPdf: 'https://oqg-primary-prod-content.s3.us-east-1.amazonaws.com/uploads/pdf/1754541559443_Blrn9B.pdf'
                 },
-                'rayne2280/CE': {
+                'rayne2280/ce': {
                     nome: 'Rayne do Nascimento Cruz',
                     projeto:'As Cores da Sombra',
                     data: '06/08/2025',
@@ -229,8 +241,8 @@
                     produtora: 'Estudios E.M Produções',
                     urlPdf: 'https://oqg-primary-prod-content.s3.us-east-1.amazonaws.com/uploads/pdf/1754754229386_2LqfIX.pdf'
                 },
-                'cleber54234/RJ': {
-                    nome: ' Cleber Alex Gonçabres.',
+                'cleber54234/rj': {
+                    nome: 'Cleber Alex Gonçabres',
                     projeto:'As Cores da Sombra',
                     data: '06/08/2025',
                     horas: '45',
@@ -244,21 +256,31 @@
                     horas: '80',
                     produtora: 'Estudios E.M Produções',
                     urlPdf: 'https://oqg-primary-prod-content.s3.us-east-1.amazonaws.com/uploads/pdf/1754756680653_cYTh6g.pdf'
-
                 },
-                'mathias0053778/RJ': {
+                'mathias0053778/rj': {
                     nome: 'Mathias Nicolas Gonzalez Alvarez',
                     projeto:'As Cores da Sombra',
                     data: '06/08/2025',
                     horas: '36',
                     produtora: 'Estudios E.M Produções',
                     urlPdf: 'https://oqg-primary-prod-content.s3.us-east-1.amazonaws.com/uploads/pdf/1754755768277_0u5MjS.pdf'
+                },
+                'paulo5707': {
+                    nome: ' Paulo Victor Silra de Melo',
+                    projeto:'As Cores da Sombra',
+                    data: '06/08/2025',
+                    horas: '12',
+                    produtora: 'Estudios E.M Produções',
+                    urlPdf: 'https://oqg-primary-prod-content.s3.us-east-1.amazonaws.com/uploads/pdf/1754759109225_7l7TFj.pdf'
+
+                }
             };
-            
+                        
             // Simular delay de API
             await new Promise(resolve => setTimeout(resolve, 1500));
             
-            return certificadosExternos[codigo] || null;
+            // Buscar com código normalizado primeiro, depois original
+            return certificadosExternos[codigoNormalizado] || certificadosExternos[codigo] || null;
         }
         
         function mostrarCarregando() {
@@ -285,10 +307,10 @@
                         <p><strong>Carga Horária:</strong> ${certificado.horas} horas</p>
                         <p><strong>Produtora:</strong> ${certificado.produtora || certificado.instituicao}</p>
                         <p><strong>Status:</strong> Verificado no sistema externo</p>
-                        <button class="btn-certificado" onclick="abrirCertificado('${codigo}')">
-                            📄 ABRIR CERTIFICADO
-                        </button>
                     </div>
+                    <button class="btn-certificado" onclick="abrirCertificado('${codigo}')">
+                        📄 ABRIR CERTIFICADO
+                    </button>
                 `;
             }
             
